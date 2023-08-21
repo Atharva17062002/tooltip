@@ -129,7 +129,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
       triangleRotation = math.pi; // Rotate 180 degrees
     } else {
       final maxY = renderBox.localToGlobal(Offset(0, renderBox.size.height)).dy;
-      triangleTop = math.min(dy + tooltipHeight - 15, maxY); // Below material
+      triangleTop = math.min(dy + tooltipHeight - 10, maxY); // Below material
     }
 
     _overlayEntry = OverlayEntry(
@@ -138,8 +138,8 @@ class _CustomTooltipState extends State<CustomTooltip> {
           child: Stack(
             children: [
               Positioned(
-                top: isTooltipAbove ? dy + 10 : dy,
-                left: isTooltipAbove ? dx + 3 : dx,
+                top: isTooltipAbove ? dy + 10 : dy - 5,
+                left: isTooltipAbove ? dx + 3 : dx + 4,
                 child: widget.message != ''
                     ? Material(
                         type: MaterialType.transparency,
