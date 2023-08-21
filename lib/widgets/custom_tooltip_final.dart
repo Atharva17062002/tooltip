@@ -30,7 +30,7 @@ class TrianglePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter customPainter) {
+  bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
 }
@@ -162,14 +162,14 @@ class _CustomTooltipState extends State<CustomTooltip> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               widget.image != null
                                   ? Container(
                                       width: tooltipWidth,
                                       height: imageHeight,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         color: Colors.white,
                                         shape: BoxShape.circle,
                                       ),
@@ -187,7 +187,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
                           ),
                         ),
                       )
-                    : SizedBox(
+                    : const SizedBox(
                         height: 0,
                         width: 0,
                       ),

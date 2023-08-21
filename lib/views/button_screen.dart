@@ -93,8 +93,7 @@ class _ButtonScreenState extends State<ButtonScreen> {
                       textColor: widget.customToolTipOptions.textColor,
                       bgColor: widget.customToolTipOptions.bgColor,
                       image: widget.customToolTipOptions.image,
-                      imageHeight:
-                          widget.customToolTipOptions.imageHeight as double,
+                      imageHeight: widget.customToolTipOptions.imageHeight,
                       id: '',
                       child: Button(
                         text: 'Button 3',
