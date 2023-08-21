@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:math' as math;
 
 class TrianglePainter extends CustomPainter {
   bool isDownArrow;
@@ -7,7 +8,6 @@ class TrianglePainter extends CustomPainter {
 
   TrianglePainter({this.isDownArrow = true, required this.color});
 
-  /// Draws the triangle of specific [size] on [canvas]
   @override
   void paint(Canvas canvas, Size size) {
     Path path = Path();
@@ -29,45 +29,14 @@ class TrianglePainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  /// Specifies to redraw for [customPainter]
   @override
   bool shouldRepaint(CustomPainter customPainter) {
     return true;
   }
 }
 
-// class MyApp1 extends StatelessWidget {
-//   const MyApp1({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//         body: Stack(
-//           children: [
-//             Positioned(
-//               top: 330,
-//               right: 200,
-//               child: CustomTooltip(
-//                 message: "Hello, this is a custom tooltip!",
-//                 child: Container(
-//                   child: Text('Click me'),
-//                   padding: EdgeInsets.all(16.0),
-//                   decoration: BoxDecoration(
-//                     color: Colors.blue,
-//                     borderRadius: BorderRadius.circular(8.0),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class CustomTooltip extends StatefulWidget {
+  final ImageProvider? image;
   final Widget child;
   final String message;
   String id;
@@ -79,8 +48,10 @@ class CustomTooltip extends StatefulWidget {
   late double _toolTipWidth;
   late double _arrowWidth;
   late double _arrowHeight;
+  late double _imageHeight;
 
   CustomTooltip({
+    double? imageHeight,
     super.key,
     double? cornerRadius,
     required this.id,
@@ -93,7 +64,9 @@ class CustomTooltip extends StatefulWidget {
     double? arrowWidth,
     required this.child,
     required this.message,
+    this.image,
   }) {
+    _imageHeight = imageHeight ?? 100;
     _textColor = textColor ?? Colors.white;
     _bgColor = bgColor ?? const Color(0xff212121);
     _textSize = textSize ?? 16.0;
@@ -115,93 +88,132 @@ class _CustomTooltipState extends State<CustomTooltip> {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final screenSize = MediaQuery.of(context).size;
     const tooltipHeight = 40.0;
+    final double imageHeight = widget._imageHeight / 20;
 
-    // Calculate available space on the horizontal and vertical sides
     final double spaceBelow = screenSize.height -
         renderBox.localToGlobal(Offset.zero).dy -
         renderBox.size.height;
 
     final double spaceAbove = renderBox.localToGlobal(Offset.zero).dy;
-    final double spaceRight = screenSize.width -
-        renderBox.localToGlobal(Offset.zero).dx -
-        renderBox.size.width;
-    final double spaceLeft = renderBox.localToGlobal(Offset.zero).dx;
 
-    double dx = spaceLeft +
-        renderBox.size.width / 2.0 -
-        (widget.message.length * 0) / 2.0;
-    if (dx < 10.0) {
-      dx = 10.0;
-    }
-    if (spaceLeft - widget.message.length * 2 > 15) {
-      dx = spaceLeft - widget.message.length * 3.5 - 15;
-    }
-    if (spaceRight - widget.message.length * 2 > 15) {
-      dx = spaceLeft + 15;
-    }
+    double dy;
+    bool isTooltipAbove;
 
-    double dy = spaceAbove - 20;
-    if (dy <= MediaQuery.of(context).padding.top + 10) {
-      // not enough space above, show popup under the widget.
-      dy = 15 + renderBox.size.height + spaceAbove;
+    if (spaceBelow >= tooltipHeight) {
+      dy = renderBox.localToGlobal(Offset.zero).dy + renderBox.size.height;
+      isTooltipAbove = true;
+    } else if (spaceAbove >= tooltipHeight) {
+      dy = renderBox.localToGlobal(Offset.zero).dy - tooltipHeight;
+      isTooltipAbove = false;
     } else {
-      dy -= 15;
-    }
-    // Determine the best position for the tooltip based on available space
-    if (spaceBelow >= tooltipHeight && spaceAbove < spaceBelow) {
-      // Display the tooltip below the widget
-    } else if (spaceAbove >= tooltipHeight && spaceBelow < spaceAbove) {
-      // Display the tooltip above the widget
-    } else {
-      // Display the tooltip just above the widget when it's in the extreme right
+      dy = renderBox.localToGlobal(Offset.zero).dy + renderBox.size.height;
+      isTooltipAbove = true;
     }
 
-    // Create overlay entry for the tooltip
+    final double childCenterX =
+        renderBox.localToGlobal(Offset(renderBox.size.width / 2, 0)).dx;
+    final double tooltipWidth = widget._toolTipWidth + widget._padding * 2;
+    double dx = childCenterX - tooltipWidth / 2;
+    if (dx < 0) {
+      dx = 0;
+    } else if (dx + tooltipWidth > screenSize.width) {
+      dx = screenSize.width - tooltipWidth;
+    }
+
+    double triangleTop;
+    double triangleRotation = 0.0;
+
+    if (isTooltipAbove) {
+      triangleTop = math.max(dy - widget._arrowHeight + 10,
+          renderBox.localToGlobal(Offset.zero).dy); // Above material
+      triangleRotation = math.pi; // Rotate 180 degrees
+    } else {
+      final maxY = renderBox.localToGlobal(Offset(0, renderBox.size.height)).dy;
+      triangleTop = math.min(dy + tooltipHeight - 15, maxY); // Below material
+    }
+
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) {
-        return Stack(
-          children: [
-            Positioned(
-              top: dy,
-              left: dx,
-              child: Material(
-                type: MaterialType.transparency,
-                child: Container(
-                  width: widget._toolTipWidth,
-                  padding: EdgeInsets.all(widget._padding),
-                  decoration: BoxDecoration(
-                    color: widget._bgColor,
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(widget._cornerRadius)),
+        return Center(
+          child: Stack(
+            children: [
+              Positioned(
+                top: isTooltipAbove ? dy + 10 : dy,
+                left: isTooltipAbove ? dx + 3 : dx,
+                child: widget.message != ''
+                    ? Material(
+                        type: MaterialType.transparency,
+                        child: Container(
+                          width: widget._toolTipWidth,
+                          padding: EdgeInsets.all(widget._padding),
+                          decoration: BoxDecoration(
+                            color: widget._bgColor,
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(widget._cornerRadius)),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                widget.message,
+                                style: GoogleFonts.barlow(
+                                  textStyle: TextStyle(
+                                    color: widget._textColor,
+                                    fontSize: widget._textSize,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              widget.image != null
+                                  ? Container(
+                                      width: tooltipWidth,
+                                      height: imageHeight,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: widget.image != null
+                                          ? Image(
+                                              image: widget.image!,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                    )
+                                  : Container(
+                                      color: Colors.transparent,
+                                    ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : SizedBox(
+                        height: 0,
+                        width: 0,
+                      ),
+              ),
+              Positioned(
+                top: triangleTop,
+                left:
+                    dx + widget._toolTipWidth / 2 - widget._arrowWidth / 2 + 3,
+                child: Transform.rotate(
+                  angle: triangleRotation,
+                  child: CustomPaint(
+                    size: Size(widget._arrowWidth, widget._arrowHeight),
+                    painter: TrianglePainter(
+                        isDownArrow: true, color: widget._bgColor),
                   ),
-                  child: Text(widget.message,
-                      style: GoogleFonts.barlow(
-                          textStyle: TextStyle(
-                        color: widget._textColor,
-                        fontSize: widget._textSize,
-                      ))),
                 ),
               ),
-            ),
-            Positioned(
-              top: widget._padding,
-              left: widget._toolTipWidth / 2 - widget._arrowWidth / 2,
-              child: CustomPaint(
-                size: Size(widget._arrowWidth, widget._arrowHeight),
-                painter:
-                    TrianglePainter(isDownArrow: true, color: widget._bgColor),
-              ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
 
-    // Insert overlay entry
     Overlay.of(context).insert(_overlayEntry!);
 
-    // Schedule the removal of the tooltip after 1 second
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
       _hideTooltip();
     });
   }

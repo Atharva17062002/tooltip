@@ -16,11 +16,15 @@ class CustomToolTipOptions {
   double? arrowWidth;
   double? arrowHeight;
   bool enabled;
-
+  ImageProvider? image;
+  double? imageHeight;
+  double? imageWidth;
 
   CustomToolTipOptions(
-      {
-       required this.toolText,
+      {this.image,
+      this.imageHeight,
+      this.imageWidth,
+      required this.toolText,
       this.textColor,
       this.arrowHeight,
       this.arrowWidth,
@@ -31,22 +35,4 @@ class CustomToolTipOptions {
       this.textSize,
       this.toolTipWidth,
       required this.enabled});
-}
-
-class CustomToolTip extends StatefulWidget {
-  const CustomToolTip(
-      {super.key, required this.customToolTipOptions, required this.button});
-
-  @override
-  State<CustomToolTip> createState() => _CustomToolTipState();
-
-  final CustomToolTipOptions customToolTipOptions;
-  final Widget button;
-}
-
-class _CustomToolTipState extends State<CustomToolTip> {
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip();
-  }
 }

@@ -40,6 +40,8 @@ class _ButtonScreenState extends State<ButtonScreen> {
                       padd: widget.customToolTipOptions.padd,
                       textColor: widget.customToolTipOptions.textColor,
                       bgColor: widget.customToolTipOptions.bgColor,
+                      image: widget.customToolTipOptions.image,
+                      imageHeight: widget.customToolTipOptions.imageHeight,
                       id: '',
                       child: Button(
                         text: 'Button 1',
@@ -65,6 +67,8 @@ class _ButtonScreenState extends State<ButtonScreen> {
                         padd: widget.customToolTipOptions.padd,
                         textColor: widget.customToolTipOptions.textColor,
                         bgColor: widget.customToolTipOptions.bgColor,
+                        image: widget.customToolTipOptions.image,
+                        imageHeight: widget.customToolTipOptions.imageHeight,
                         id: '',
                         child: Button(
                           text: 'Button 2',
@@ -88,6 +92,9 @@ class _ButtonScreenState extends State<ButtonScreen> {
                       padd: widget.customToolTipOptions.padd,
                       textColor: widget.customToolTipOptions.textColor,
                       bgColor: widget.customToolTipOptions.bgColor,
+                      image: widget.customToolTipOptions.image,
+                      imageHeight:
+                          widget.customToolTipOptions.imageHeight as double,
                       id: '',
                       child: Button(
                         text: 'Button 3',
@@ -113,6 +120,8 @@ class _ButtonScreenState extends State<ButtonScreen> {
                       padd: widget.customToolTipOptions.padd,
                       textColor: widget.customToolTipOptions.textColor,
                       bgColor: widget.customToolTipOptions.bgColor,
+                      image: widget.customToolTipOptions.image,
+                      imageHeight: widget.customToolTipOptions.imageHeight,
                       id: '',
                       child: Button(
                         text: 'Button 4',
@@ -138,6 +147,8 @@ class _ButtonScreenState extends State<ButtonScreen> {
                       padd: widget.customToolTipOptions.padd,
                       textColor: widget.customToolTipOptions.textColor,
                       bgColor: widget.customToolTipOptions.bgColor,
+                      image: widget.customToolTipOptions.image,
+                      imageHeight: widget.customToolTipOptions.imageHeight,
                       id: '',
                       child: Button(
                         text: 'Button 5',
