@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math' as math;
@@ -137,61 +139,117 @@ class _CustomTooltipState extends State<CustomTooltip> {
         return Center(
           child: Stack(
             children: [
-              Positioned(
-                top: isTooltipAbove ? dy + 10 : dy - 5,
-                left: isTooltipAbove ? dx + 3 : dx + 4,
-                child: widget.message != ''
-                    ? Material(
-                        type: MaterialType.transparency,
-                        child: Container(
-                          width: widget._toolTipWidth,
-                          padding: EdgeInsets.all(widget._padding),
-                          decoration: BoxDecoration(
-                            color: widget._bgColor,
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(widget._cornerRadius)),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                widget.message,
-                                style: GoogleFonts.barlow(
-                                  textStyle: TextStyle(
-                                    color: widget._textColor,
-                                    fontSize: widget._textSize,
-                                  ),
+              isTooltipAbove
+                  ? Positioned(
+                      top: dy + 10,
+                      left: dx + 4,
+                      child: widget.message != ''
+                          ? Material(
+                              type: MaterialType.transparency,
+                              child: Container(
+                                width: widget._toolTipWidth,
+                                padding: EdgeInsets.all(widget._padding),
+                                decoration: BoxDecoration(
+                                  color: widget._bgColor,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(widget._cornerRadius)),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      widget.message,
+                                      style: GoogleFonts.barlow(
+                                        textStyle: TextStyle(
+                                          color: widget._textColor,
+                                          fontSize: widget._textSize,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    widget.image != null
+                                        ? Container(
+                                            width: tooltipWidth,
+                                            height: imageHeight,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: widget.image != null
+                                                ? Image(
+                                                    image: widget.image!,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : null,
+                                          )
+                                        : Container(
+                                            color: Colors.transparent,
+                                          ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              widget.image != null
-                                  ? Container(
-                                      width: tooltipWidth,
-                                      height: imageHeight,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: widget.image != null
-                                          ? Image(
-                                              image: widget.image!,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : null,
-                                    )
-                                  : Container(
-                                      color: Colors.transparent,
+                            )
+                          : const SizedBox(
+                              height: 0,
+                              width: 0,
+                            ),
+                    )
+                  : Positioned(
+                      top: dy - imageHeight - 5,
+                      left: isTooltipAbove ? dx + 3 : dx + 4,
+                      child: widget.message != ''
+                          ? Material(
+                              type: MaterialType.transparency,
+                              child: Container(
+                                width: widget._toolTipWidth,
+                                padding: EdgeInsets.all(widget._padding),
+                                decoration: BoxDecoration(
+                                  color: widget._bgColor,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(widget._cornerRadius)),
+                                ),
+                                child: Column(
+                                  children: [
+                                    widget.image != null
+                                        ? Container(
+                                            width: tooltipWidth,
+                                            height: imageHeight,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: widget.image != null
+                                                ? Image(
+                                                    image: widget.image!,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : null,
+                                          )
+                                        : Container(
+                                            color: Colors.transparent,
+                                          ),
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : const SizedBox(
-                        height: 0,
-                        width: 0,
-                      ),
-              ),
+                                    Text(
+                                      widget.message,
+                                      style: GoogleFonts.barlow(
+                                        textStyle: TextStyle(
+                                          color: widget._textColor,
+                                          fontSize: widget._textSize,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : const SizedBox(
+                              height: 0,
+                              width: 0,
+                            ),
+                    ),
               Positioned(
                 top: triangleTop,
                 left:
