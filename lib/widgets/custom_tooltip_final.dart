@@ -51,6 +51,7 @@ class CustomTooltip extends StatefulWidget {
   late double _arrowWidth;
   late double _arrowHeight;
   late double _imageHeight;
+  late double _toolTipHeight;
 
   CustomTooltip({
     double? imageHeight,
@@ -67,6 +68,7 @@ class CustomTooltip extends StatefulWidget {
     required this.child,
     required this.message,
     this.image,
+    double? toolTipHeight,
   }) {
     _imageHeight = imageHeight ?? 100;
     _textColor = textColor ?? Colors.white;
@@ -77,6 +79,7 @@ class CustomTooltip extends StatefulWidget {
     _arrowHeight = arrowHeight ?? 10.0;
     _padding = padd ?? 3.35;
     _toolTipWidth = toolTipWidth ?? 100;
+    _toolTipHeight = toolTipHeight ?? 50;
   }
 
   @override
@@ -89,7 +92,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
   void _showTooltip(BuildContext context) {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final screenSize = MediaQuery.of(context).size;
-    const tooltipHeight = 40.0;
+    final tooltipHeight = widget._toolTipHeight;
     final double imageHeight = widget._imageHeight / 20;
 
     final double spaceBelow = screenSize.height -
@@ -99,17 +102,17 @@ class _CustomTooltipState extends State<CustomTooltip> {
     final double spaceAbove = renderBox.localToGlobal(Offset.zero).dy;
 
     double dy;
-    bool isTooltipAbove;
+    bool isTooltipBelow;
 
     if (spaceBelow >= tooltipHeight) {
       dy = renderBox.localToGlobal(Offset.zero).dy + renderBox.size.height;
-      isTooltipAbove = true;
+      isTooltipBelow = true;
     } else if (spaceAbove >= tooltipHeight) {
       dy = renderBox.localToGlobal(Offset.zero).dy - tooltipHeight;
-      isTooltipAbove = false;
+      isTooltipBelow = false;
     } else {
       dy = renderBox.localToGlobal(Offset.zero).dy + renderBox.size.height;
-      isTooltipAbove = true;
+      isTooltipBelow = true;
     }
 
     final double childCenterX =
@@ -125,13 +128,15 @@ class _CustomTooltipState extends State<CustomTooltip> {
     double triangleTop;
     double triangleRotation = 0.0;
 
-    if (isTooltipAbove) {
+    if (isTooltipBelow) {
+      print(isTooltipBelow);
       triangleTop = math.max(dy - widget._arrowHeight + 10,
           renderBox.localToGlobal(Offset.zero).dy); // Above material
       triangleRotation = math.pi; // Rotate 180 degrees
     } else {
+      print(dy);
       final maxY = renderBox.localToGlobal(Offset(0, renderBox.size.height)).dy;
-      triangleTop = math.min(dy + tooltipHeight - 10, maxY); // Below material
+      triangleTop = dy + tooltipHeight - widget._padding * 4; // Below material
     }
 
     _overlayEntry = OverlayEntry(
@@ -139,116 +144,106 @@ class _CustomTooltipState extends State<CustomTooltip> {
         return Center(
           child: Stack(
             children: [
-              isTooltipAbove
+              isTooltipBelow
                   ? Positioned(
                       top: dy + 10,
                       left: dx + 4,
-                      child: widget.message != ''
-                          ? Material(
-                              type: MaterialType.transparency,
-                              child: Container(
-                                width: widget._toolTipWidth,
-                                padding: EdgeInsets.all(widget._padding),
-                                decoration: BoxDecoration(
-                                  color: widget._bgColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(widget._cornerRadius)),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      widget.message,
-                                      style: GoogleFonts.barlow(
-                                        textStyle: TextStyle(
-                                          color: widget._textColor,
-                                          fontSize: widget._textSize,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    widget.image != null
-                                        ? Container(
-                                            width: tooltipWidth,
-                                            height: imageHeight,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: widget.image != null
-                                                ? Image(
-                                                    image: widget.image!,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : null,
-                                          )
-                                        : Container(
-                                            color: Colors.transparent,
-                                          ),
-                                  ],
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: Container(
+                          width: widget._toolTipWidth,
+                          padding: EdgeInsets.all(widget._padding),
+                          decoration: BoxDecoration(
+                            color: widget._bgColor,
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(widget._cornerRadius)),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                widget.message,
+                                style: GoogleFonts.barlow(
+                                  textStyle: TextStyle(
+                                    color: widget._textColor,
+                                    fontSize: widget._textSize,
+                                  ),
                                 ),
                               ),
-                            )
-                          : const SizedBox(
-                              height: 0,
-                              width: 0,
-                            ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              widget.image != null
+                                  ? Container(
+                                      width: tooltipWidth,
+                                      height: imageHeight,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: widget.image != null
+                                          ? Image(
+                                              image: widget.image!,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                    )
+                                  : Container(
+                                      color: Colors.transparent,
+                                    ),
+                            ],
+                          ),
+                        ),
+                      ),
                     )
                   : Positioned(
-                      top: dy - imageHeight - 5,
-                      left: isTooltipAbove ? dx + 3 : dx + 4,
-                      child: widget.message != ''
-                          ? Material(
-                              type: MaterialType.transparency,
-                              child: Container(
-                                width: widget._toolTipWidth,
-                                padding: EdgeInsets.all(widget._padding),
-                                decoration: BoxDecoration(
-                                  color: widget._bgColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(widget._cornerRadius)),
-                                ),
-                                child: Column(
-                                  children: [
-                                    widget.image != null
-                                        ? Container(
-                                            width: tooltipWidth,
-                                            height: imageHeight,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: widget.image != null
-                                                ? Image(
-                                                    image: widget.image!,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : null,
-                                          )
-                                        : Container(
-                                            color: Colors.transparent,
-                                          ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                      widget.message,
-                                      style: GoogleFonts.barlow(
-                                        textStyle: TextStyle(
-                                          color: widget._textColor,
-                                          fontSize: widget._textSize,
-                                        ),
+                      top: dy - imageHeight,
+                      left: dx + 4,
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: Container(
+                          width: widget._toolTipWidth,
+                          padding: EdgeInsets.all(widget._padding),
+                          decoration: BoxDecoration(
+                            color: widget._bgColor,
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(widget._cornerRadius)),
+                          ),
+                          child: Column(
+                            children: [
+                              widget.image != null
+                                  ? Container(
+                                      width: tooltipWidth,
+                                      height: imageHeight,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
                                       ),
+                                      child: widget.image != null
+                                          ? Image(
+                                              image: widget.image!,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                    )
+                                  : Container(
+                                      color: Colors.transparent,
                                     ),
-                                  ],
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                widget.message,
+                                style: GoogleFonts.barlow(
+                                  textStyle: TextStyle(
+                                    color: widget._textColor,
+                                    fontSize: widget._textSize,
+                                  ),
                                 ),
                               ),
-                            )
-                          : const SizedBox(
-                              height: 0,
-                              width: 0,
-                            ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
               Positioned(
                 top: triangleTop,
