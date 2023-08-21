@@ -80,7 +80,8 @@ class _ButtonScreenState extends State<ButtonScreen> {
                         onPressed: () {},
                       )),
             Positioned(
-              top: 400,
+              bottom: 60,
+              left: 15,
               child: (widget.selectedID == 'Button 3')
                   ? CustomTooltip(
                       cornerRadius: widget.customToolTipOptions.cornerRadius,

@@ -78,7 +78,7 @@ class CustomTooltip extends StatefulWidget {
     _cornerRadius = cornerRadius ?? 1.68;
     _arrowHeight = arrowHeight ?? 10.0;
     _padding = padd ?? 3.35;
-    _toolTipWidth = toolTipWidth ?? 100;
+    _toolTipWidth = toolTipWidth ?? 170;
     _toolTipHeight = toolTipHeight ?? 50;
   }
 
@@ -134,9 +134,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
           renderBox.localToGlobal(Offset.zero).dy); // Above material
       triangleRotation = math.pi; // Rotate 180 degrees
     } else {
-      print(dy);
-      final maxY = renderBox.localToGlobal(Offset(0, renderBox.size.height)).dy;
-      triangleTop = dy + tooltipHeight - widget._padding * 4; // Below material
+      triangleTop = dy + (widget.image == null ? 40 : 40);
     }
 
     _overlayEntry = OverlayEntry(
@@ -196,7 +194,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
                       ),
                     )
                   : Positioned(
-                      top: dy - imageHeight,
+                      bottom: MediaQuery.of(context).size.height - triangleTop,
                       left: dx + 4,
                       child: Material(
                         type: MaterialType.transparency,
