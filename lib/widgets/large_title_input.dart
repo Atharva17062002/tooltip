@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tooltip_plotline/widgets/utils.dart';
 
@@ -17,7 +16,7 @@ class LargeTitleInput extends StatefulWidget {
 class _LargeTitleInputState extends State<LargeTitleInput> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 90,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

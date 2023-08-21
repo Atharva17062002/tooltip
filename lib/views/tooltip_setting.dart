@@ -244,7 +244,6 @@ class _ToolTipSettingsState extends State<ToolTipSettings> {
                               .addListener(
                             ImageStreamListener((ImageInfo info, bool _) {
                               final height = info.image.height;
-
                               setState(() {
                                 customToolTipOptions.imageHeight =
                                     height.toDouble();

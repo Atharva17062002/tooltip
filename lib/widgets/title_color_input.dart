@@ -87,7 +87,6 @@ class _ColorTitleInputState extends State<ColorTitleInput> {
               padding: const EdgeInsets.only(left: 10),
               child: TextFormField(
                 readOnly: true,
-                // initialValue: 'Choose Color',
                 onTap: () {
                   _openColorPicker(context);
                 },

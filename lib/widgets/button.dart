@@ -5,12 +5,10 @@ class Button extends StatefulWidget {
     super.key,
     required this.text,
     required this.onPressed,
-    // required this.globalKey,
   });
 
   final String text;
   final VoidCallback onPressed;
-  // final GlobalKey globalKey;
 
   @override
   State<Button> createState() => _ButtonState();
@@ -20,7 +18,6 @@ class _ButtonState extends State<Button> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // key: widget.globalKey,
       onTap: () {
         widget.onPressed;
       },

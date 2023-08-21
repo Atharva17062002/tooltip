@@ -10,7 +10,7 @@ class SmallInputAndTitle extends StatelessWidget {
   final TextEditingController textEditingController;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 90,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,7 +19,7 @@ class SmallInputAndTitle extends StatelessWidget {
             title,
             style: TextStyles.universalTextStyle,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Container(
@@ -32,7 +32,7 @@ class SmallInputAndTitle extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
             ),
             child: Padding(
-              padding: EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.only(left: 10),
               child: TextFormField(
                 style: TextStyles.universalTextStyle,
                 keyboardType: TextInputType.number,
