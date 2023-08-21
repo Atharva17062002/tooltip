@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math' as math;
@@ -129,12 +127,10 @@ class _CustomTooltipState extends State<CustomTooltip> {
     double triangleRotation = 0.0;
 
     if (isTooltipBelow) {
-      print(isTooltipBelow);
-      triangleTop = math.max(dy - widget._arrowHeight + 10,
-          renderBox.localToGlobal(Offset.zero).dy); // Above material
-      triangleRotation = math.pi; // Rotate 180 degrees
+      triangleTop = dy;
+      triangleRotation = math.pi;
     } else {
-      triangleTop = dy + (widget.image == null ? 40 : 40);
+      triangleTop = dy + 40 - widget._arrowHeight + 10;
     }
 
     _overlayEntry = OverlayEntry(
@@ -144,7 +140,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
             children: [
               isTooltipBelow
                   ? Positioned(
-                      top: dy + 10,
+                      top: dy + widget._arrowHeight,
                       left: dx + 4,
                       child: Material(
                         type: MaterialType.transparency,
